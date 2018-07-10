@@ -1,5 +1,6 @@
 package com.quikr.cryptosupermarket.coinmarketcap.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.quikr.cryptosupermarket.domain.ListingsResult;
 import com.quikr.cryptosupermarket.domain.ListingsWithPriceResults;
 import lombok.extern.log4j.Log4j2;
@@ -8,6 +9,8 @@ import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+
+import java.io.FileWriter;
 
 @Service
 @CacheConfig(cacheNames = "coinmarketcap")
@@ -20,8 +23,8 @@ public class CoinMarketCapDataCache {
     @Autowired
     private CoinMarketCapMockData coinMarketCapMockData;
 
-//    @Autowired
-//    private ObjectMapper objectMapper;
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @CachePut(cacheNames = "coinmarketcap", key = "{#root.methodName}")
     public ListingsResult listings(ListingsResult listingsResult) {
@@ -53,11 +56,11 @@ public class CoinMarketCapDataCache {
         return coinMarketCapFeignClient.listingsWithPrices(start, limit, currency);
     }
 
-//    private void writeToFile(String currency, ListingsWithPriceResults listingsWithPriceResults) {
-//        try(FileWriter fileWriter = new FileWriter("src/main/resources/coinmarketcap-listings-"+ currency + ".json")) {
-//            objectMapper.writeValue(fileWriter, listingsWithPriceResults);
-//        } catch (Exception e) {
-//            log.error("failed to serialize as JSON", e);
-//        }
-//    }
+    private void writeToFile(String currency, ListingsWithPriceResults listingsWithPriceResults) {
+        try(FileWriter fileWriter = new FileWriter("src/main/resources/coinmarketcap-listings-"+ currency + ".json")) {
+            objectMapper.writeValue(fileWriter, listingsWithPriceResults);
+        } catch (Exception e) {
+            log.error("failed to serialize as JSON", e);
+        }
+    }
 }

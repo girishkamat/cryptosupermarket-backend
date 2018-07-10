@@ -20,14 +20,18 @@ public class ListingsHandler {
     private CoinMarketCapService coinMarketCapService;
 
     public Mono<ServerResponse> getListings(ServerRequest serverRequest) {
-        return ok().contentType(APPLICATION_JSON)
+        return ok()
+                .header("access-control-allow-origin","*")
+                .contentType(APPLICATION_JSON)
                 .body(Mono.just(coinMarketCapService.listings()), ListingsResult.class);
     }
 
     public Mono<ServerResponse> getListingsWithPrices(ServerRequest serverRequest) {
         int start = parseInt(serverRequest.queryParam("start").orElse("1"));
         int limit = parseInt(serverRequest.queryParam("limit").orElse("100"));
-        return ok().contentType(APPLICATION_JSON)
+        return ok()
+                .header("access-control-allow-origin","*")
+                .contentType(APPLICATION_JSON)
                 .body(Mono.just(coinMarketCapService.listingsWithPrices(serverRequest.pathVariable("currency"), start, limit)),
                         ListingsWithPriceResults.class);
     }

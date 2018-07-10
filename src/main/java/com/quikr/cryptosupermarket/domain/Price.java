@@ -11,11 +11,17 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 public class Price {
+    @JsonProperty("price")
     private String price;
+    @JsonProperty("volume_24h")
     private long volume24h;
+    @JsonProperty("market_cap")
     private long marketCap;
+    @JsonProperty("percent_change_1h")
     private String percentChange1h;
+    @JsonProperty("percent_change_24h")
     private String percentChange24h;
+    @JsonProperty("percent_change_7d")
     private String percentChange7d;
 
     @Builder

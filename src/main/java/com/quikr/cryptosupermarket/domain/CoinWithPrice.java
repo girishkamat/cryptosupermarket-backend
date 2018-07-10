@@ -14,15 +14,25 @@ import java.util.Map;
 @NoArgsConstructor
 @ToString
 public class CoinWithPrice {
+    @JsonProperty("id")
     private int id;
+    @JsonProperty("name")
     private String name;
+    @JsonProperty("symbol")
     private String symbol;
+    @JsonProperty("website_slug")
     private String websiteSlug;
+    @JsonProperty("rank")
     private int rank;
+    @JsonProperty("circulating_supply")
     private long circulatingSupply;
+    @JsonProperty("total_supply")
     private long totalSupply;
+    @JsonProperty("max_supply")
     private long maxSupply;
+    @JsonProperty("quotes")
     private Map<String, Price> quotes = new HashMap<>();
+    @JsonProperty("last_updated")
     private long lastUpdated;
 
     @Builder
@@ -30,7 +40,7 @@ public class CoinWithPrice {
     public CoinWithPrice(@JsonProperty("id") int id,
                          @JsonProperty("name")String name,
                          @JsonProperty("symbol")String symbol,
-                         @JsonProperty("websiteSlug")String websiteSlug,
+                         @JsonProperty("website_slug")String websiteSlug,
                          @JsonProperty("rank") int rank,
                          @JsonProperty("circulating_supply") long circulatingSupply,
                          @JsonProperty("total_supply") long totalSupply,

@@ -14,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @ToString
 public class ListingsWithPriceResults {
-
+    @JsonProperty("data")
     private List<CoinWithPrice> data = new ArrayList<>();
 
     @Builder
