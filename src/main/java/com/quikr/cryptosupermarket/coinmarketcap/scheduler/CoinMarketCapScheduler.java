@@ -1,10 +1,7 @@
 package com.quikr.cryptosupermarket.coinmarketcap.scheduler;
 
 import com.quikr.cryptosupermarket.coinmarketcap.service.CoinMarketCapDataCache;
-import com.quikr.cryptosupermarket.domain.CoinWithPrice;
-import com.quikr.cryptosupermarket.domain.Currency;
-import com.quikr.cryptosupermarket.domain.ListingsResult;
-import com.quikr.cryptosupermarket.domain.ListingsWithPriceResults;
+import com.quikr.cryptosupermarket.domain.*;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -33,14 +30,20 @@ public class CoinMarketCapScheduler {
             int start = 1;
             int limit = 100;
             List<CoinWithPrice> coinWithPrices = new ArrayList<>();
+            MetaData metaData;
             do {
-                coinWithPrices.addAll(coinMarketCapDataCache
-                        .fetchListingsWithPrices(start, limit, currency.name()).getData());
+                ListingsWithPriceResults listingsWithPriceResults = coinMarketCapDataCache
+                        .fetchListingsWithPrices(start, limit, currency.name());
+                coinWithPrices.addAll(listingsWithPriceResults.getData());
+                metaData = listingsWithPriceResults.getMetaData();
                 start += limit;
                 sleep();
             } while (start < numberOfCoins);
             coinMarketCapDataCache.listingsWithPrices(currency.name(),
-                    ListingsWithPriceResults.builder().data(coinWithPrices).build());
+                    ListingsWithPriceResults.builder()
+                            .data(coinWithPrices)
+                            .metaData(metaData)
+                            .build());
         });
     }
 

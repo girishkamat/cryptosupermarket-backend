@@ -29,6 +29,9 @@ public class CoinMarketCapService {
         if(toIndex > listingsWithPriceResults.getData().size()) {
             toIndex = listingsWithPriceResults.getData().size();
         }
-        return ListingsWithPriceResults.builder().data(listingsWithPriceResults.getData().subList(fromIndex, toIndex)).build();
+        return ListingsWithPriceResults.builder()
+                .data(listingsWithPriceResults.getData().subList(fromIndex, toIndex))
+                .metaData(listingsWithPriceResults.getMetaData())
+                .build();
     }
 }

@@ -17,9 +17,14 @@ public class ListingsResult {
     @JsonProperty("data")
     private List<Coin> data = new ArrayList<>();
 
+    @JsonProperty("metadata")
+    private MetaData metaData;
+
     @Builder
     @JsonCreator
-    public ListingsResult(@JsonProperty("data") List<Coin> data) {
+    public ListingsResult(@JsonProperty("data") List<Coin> data,
+                          @JsonProperty("metadata") MetaData metaData) {
         this.data = data;
+        this.metaData = metaData;
     }
 }

@@ -38,10 +38,17 @@ public class CoinMarketCapMockData {
 
     @PostConstruct
     public void loadListings() throws IOException {
+
+        if(listingsUSD != null)
         cache.put(Currency.USD.name(), objectMapper.readValue(listingsUSD.getInputStream(),ListingsWithPriceResults.class));
+
+        if(listingsEUR != null)
         cache.put(Currency.EUR.name(), objectMapper.readValue(listingsEUR.getInputStream(),ListingsWithPriceResults.class));
+
+        if(listingsGBP != null)
         cache.put(Currency.GBP.name(), objectMapper.readValue(listingsGBP.getInputStream(),ListingsWithPriceResults.class));
 
+        if(listings != null)
         listingsResult = objectMapper.readValue(listings.getInputStream(), ListingsResult.class);
     }
 
