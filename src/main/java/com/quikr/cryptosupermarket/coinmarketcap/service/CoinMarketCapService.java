@@ -1,11 +1,17 @@
 package com.quikr.cryptosupermarket.coinmarketcap.service;
 
+import com.quikr.cryptosupermarket.domain.CoinWithPrice;
 import com.quikr.cryptosupermarket.domain.ListingsResult;
 import com.quikr.cryptosupermarket.domain.ListingsWithPriceResults;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.apache.commons.lang.StringUtils.isNotBlank;
 
 @Service
 @CacheConfig(cacheNames = "coinmarketcap")
@@ -19,7 +25,7 @@ public class CoinMarketCapService {
         return coinMarketCapDataCache.listings();
     }
 
-    public ListingsWithPriceResults listingsWithPrices(String currency, int start, int limit) {
+    public ListingsWithPriceResults listingsWithPrices(String currency, String filter, int start, int limit) {
         ListingsWithPriceResults listingsWithPriceResults = coinMarketCapDataCache.listingsWithPrices(currency);
         int fromIndex = start - 1;
         if(fromIndex < 0 || fromIndex >= listingsWithPriceResults.getData().size()) {
@@ -29,8 +35,14 @@ public class CoinMarketCapService {
         if(toIndex > listingsWithPriceResults.getData().size()) {
             toIndex = listingsWithPriceResults.getData().size();
         }
+
+        List<CoinWithPrice> data = listingsWithPriceResults.getData().subList(fromIndex, toIndex);
+        if(isNotBlank(filter)) {
+            data = data.stream().filter(c -> c.getSymbol().equalsIgnoreCase(filter)).collect(Collectors.toList());
+        }
+
         return ListingsWithPriceResults.builder()
-                .data(listingsWithPriceResults.getData().subList(fromIndex, toIndex))
+                .data(data)
                 .metaData(listingsWithPriceResults.getMetaData())
                 .build();
     }

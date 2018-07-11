@@ -29,10 +29,11 @@ public class ListingsHandler {
     public Mono<ServerResponse> getListingsWithPrices(ServerRequest serverRequest) {
         int start = parseInt(serverRequest.queryParam("start").orElse("1"));
         int limit = parseInt(serverRequest.queryParam("limit").orElse("100"));
+        String filter = serverRequest.queryParam("filter").orElse("");
         return ok()
                 .header("access-control-allow-origin","*")
                 .contentType(APPLICATION_JSON)
-                .body(Mono.just(coinMarketCapService.listingsWithPrices(serverRequest.pathVariable("currency"), start, limit)),
+                .body(Mono.just(coinMarketCapService.listingsWithPrices(serverRequest.pathVariable("currency"), filter, start, limit)),
                         ListingsWithPriceResults.class);
     }
 }
