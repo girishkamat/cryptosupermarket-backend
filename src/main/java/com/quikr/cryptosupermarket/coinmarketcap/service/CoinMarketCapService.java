@@ -25,21 +25,24 @@ public class CoinMarketCapService {
         return coinMarketCapDataCache.listings();
     }
 
-    public ListingsWithPriceResults listingsWithPrices(String currency, String filter, int start, int limit) {
+    public ListingsWithPriceResults listingsWithPrices(String currency, String search, int start, int limit) {
         ListingsWithPriceResults listingsWithPriceResults = coinMarketCapDataCache.listingsWithPrices(currency);
+
+        List<CoinWithPrice> data = listingsWithPriceResults.getData();
+        if(isNotBlank(search)) {
+            data = data.stream().filter(c -> c.getName().toLowerCase().contains(search.toLowerCase())
+                    || c.getSymbol().toLowerCase().contains(search.toLowerCase()))
+                    .collect(Collectors.toList());
+        }
         int fromIndex = start - 1;
-        if(fromIndex < 0 || fromIndex >= listingsWithPriceResults.getData().size()) {
-            throw new IllegalArgumentException("start is lower than 1 or higher/equal to available size");
+        if(fromIndex < 0 || fromIndex >= data.size()) {
+            return ListingsWithPriceResults.builder().metaData(listingsWithPriceResults.getMetaData()).build();
         }
         int toIndex = fromIndex + limit;
-        if(toIndex > listingsWithPriceResults.getData().size()) {
-            toIndex = listingsWithPriceResults.getData().size();
+        if(toIndex > data.size()) {
+            toIndex = data.size();
         }
-
-        List<CoinWithPrice> data = listingsWithPriceResults.getData().subList(fromIndex, toIndex);
-        if(isNotBlank(filter)) {
-            data = data.stream().filter(c -> c.getSymbol().equalsIgnoreCase(filter)).collect(Collectors.toList());
-        }
+        data = data.subList(fromIndex, toIndex);
 
         return ListingsWithPriceResults.builder()
                 .data(data)
