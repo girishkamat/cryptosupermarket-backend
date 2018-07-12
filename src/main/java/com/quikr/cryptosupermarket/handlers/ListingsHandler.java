@@ -30,10 +30,11 @@ public class ListingsHandler {
         int start = parseInt(serverRequest.queryParam("start").orElse("1"));
         int limit = parseInt(serverRequest.queryParam("limit").orElse("100"));
         String search = serverRequest.queryParam("search").orElse("");
+        String sort = serverRequest.queryParam("sort").orElse("");
         return ok()
                 .header("access-control-allow-origin","*")
                 .contentType(APPLICATION_JSON)
-                .body(Mono.just(coinMarketCapService.listingsWithPrices(serverRequest.pathVariable("currency"), search, start, limit)),
+                .body(Mono.just(coinMarketCapService.listingsWithPrices(serverRequest.pathVariable("currency"), search, sort, start, limit)),
                         ListingsWithPriceResults.class);
     }
 }
