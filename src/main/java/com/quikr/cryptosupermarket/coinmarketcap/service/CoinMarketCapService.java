@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,13 +31,14 @@ public class CoinMarketCapService {
     public ListingsWithPriceResults listingsWithPrices(String currency, String search, String sort, int start, int limit) {
         ListingsWithPriceResults listingsWithPriceResults = coinMarketCapDataCache.listingsWithPrices(currency);
 
-        List<CoinWithPrice> data = listingsWithPriceResults.getData();
+        List<CoinWithPrice> data = new ArrayList<>(listingsWithPriceResults.getData());
         if (isNotBlank(search)) {
             data = data.stream().filter(c -> c.getName().toLowerCase().contains(search.toLowerCase())
                     || c.getSymbol().toLowerCase().contains(search.toLowerCase()))
                     .collect(Collectors.toList());
         }
         if (isNotBlank(sort)) {
+            data = new ArrayList<>(data); // clone the list
             String sortField = sort.substring(0, sort.indexOf(" "));
             String sortOrder = sort.substring(sort.indexOf(" ") + 1, sort.length());
             switch (sortField) {
